@@ -38,6 +38,8 @@ app.use(cors({
       'http://127.0.0.1:3000',
       'http://localhost:5173',
       'http://127.0.0.1:5173',
+      'https://ganesaeseva2-backend.onrender.com',
+      
       // Add other allowed origins here
     ];
     
@@ -68,7 +70,6 @@ try {
   const statusRoutes = (await import('./routes/statuses.js')).default;
   const authRoutes = (await import('./routes/auth.js')).default;
   const formRoutes = (await import('./routes/forms.js')).default;
-  const todoRoutes = (await import('./routes/todos.js')).default;
   const formCategoryRoutes = (await import('./routes/formCategories.js')).default;
   const formSubCategoryRoutes = (await import('./routes/formSubCategories.js')).default;
 
@@ -76,7 +77,6 @@ try {
   app.use('/api/statuses', statusRoutes);
   app.use('/api/auth', authRoutes);
   app.use('/api/forms', formRoutes);
-  app.use('/api/todos', todoRoutes);
   app.use('/api/form-categories', formCategoryRoutes);
   app.use('/api/form-subcategories', formSubCategoryRoutes);
   
