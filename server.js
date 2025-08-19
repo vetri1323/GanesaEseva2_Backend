@@ -66,12 +66,18 @@ app.use(express.urlencoded({ extended: true }));
 
 // Import routes
 try {
+  // Helper function to import with proper file URL
+  const importRoute = async (path) => {
+    const url = new URL(`file://${process.cwd()}/routes/${path}`);
+    return (await import(url.href)).default;
+  };
+
   // Import route files
-  const statusRoutes = (await import('./routes/statuses.js')).default;
-  const authRoutes = (await import('./routes/auth.js')).default;
-  const formRoutes = (await import('./routes/forms.js')).default;
-  const formCategoryRoutes = (await import('./routes/formCategories.js')).default;
-  const formSubCategoryRoutes = (await import('./routes/formSubCategories.js')).default;
+  const statusRoutes = await importRoute('statuses.js');
+  const authRoutes = await importRoute('auth.js');
+  const formRoutes = await importRoute('forms.js');
+  const formCategoryRoutes = await importRoute('formCategories.js');
+  const formSubCategoryRoutes = await importRoute('formSubCategories.js');
 
   // Mount routes
   app.use('/api/statuses', statusRoutes);
