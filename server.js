@@ -70,11 +70,15 @@ try {
   const statusRoutes = (await import('./routes/statuses.js')).default;
   const authRoutes = (await import('./routes/auth.js')).default;
   const customerRoutes = (await import('./routes/customers.js')).default;
+  const categoryRoutes = (await import('./routes/categories.js')).default;
+  const subcategoryRoutes = (await import('./routes/subcategories.js')).default;
 
   // Mount routes
   app.use('/api/statuses', statusRoutes);
   app.use('/api/auth', authRoutes);
   app.use('/api/customers', customerRoutes);
+  app.use('/api/categories', categoryRoutes);
+  app.use('/api/subcategories', subcategoryRoutes);
   
   console.log('All routes imported successfully');
 } catch (err) {
