@@ -34,11 +34,11 @@ app.use(cors({
     if (!origin) return callback(null, true);
     
     const allowedOrigins = [
+      'https://ganesaeseva2-backend.onrender.com',
       'http://localhost:3000',
       'http://127.0.0.1:3000',
       'http://localhost:5173',
       'http://127.0.0.1:5173',
-      'https://ganesaeseva2-backend.onrender.com',
       
       // Add other allowed origins here
     ];
@@ -66,25 +66,15 @@ app.use(express.urlencoded({ extended: true }));
 
 // Import routes
 try {
-  // Helper function to import with proper file URL
-  const importRoute = async (path) => {
-    const url = new URL(`file://${process.cwd()}/routes/${path}`);
-    return (await import(url.href)).default;
-  };
-
   // Import route files
-  const statusRoutes = await importRoute('statuses.js');
-  const authRoutes = await importRoute('auth.js');
-  const formRoutes = await importRoute('forms.js');
-  const formCategoryRoutes = await importRoute('formCategories.js');
-  const formSubCategoryRoutes = await importRoute('formSubCategories.js');
+  const statusRoutes = (await import('./routes/statuses.js')).default;
+  const authRoutes = (await import('./routes/auth.js')).default;
+  const customerRoutes = (await import('./routes/customers.js')).default;
 
   // Mount routes
   app.use('/api/statuses', statusRoutes);
   app.use('/api/auth', authRoutes);
-  app.use('/api/forms', formRoutes);
-  app.use('/api/form-categories', formCategoryRoutes);
-  app.use('/api/form-subcategories', formSubCategoryRoutes);
+  app.use('/api/customers', customerRoutes);
   
   console.log('All routes imported successfully');
 } catch (err) {
@@ -196,27 +186,19 @@ const createTestTodo = async (userId) => {
 // Start the server
 const startServer = async () => {
   try {
-    // Connect to the database
+    // Connect to database
     await connectDB();
     
-    // Create test user and get the user ID
-    const testUser = await createTestUser();
+    // Create test user if it doesn't exist
+    await createTestUser();
     
-    if (!testUser) {
-      throw new Error('Failed to create test user');
-    }
+    // Use a fixed port
+    const PORT = process.env.PORT || 5002;
     
-    // Create a test todo with the test user's ID
-    await createTestTodo(testUser._id);
-
-    // Get the port from environment variables or use 5000 as default
-    const PORT = process.env.PORT || 5000;
-    const HOST = process.env.HOST || '0.0.0.0';
-
     // Start the server
-    const server = app.listen(PORT, HOST, () => {
-      console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on http://${HOST}:${PORT}`);
-      console.log(`API Base URL: http://${HOST}:${PORT}/api`);
+    const server = app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server running on port ${PORT}`);
+      console.log(`API Base URL: http://localhost:${PORT}/api`);
     });
 
     // Handle unhandled promise rejections
